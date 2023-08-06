@@ -1,0 +1,30 @@
+#!/bin/bash
+
+PROGRAM="chip8-e"
+FLAGS="-Ofast -Wall -Wextra -Wno-return-type"
+LINK="-lSDL2"
+DEBUG="-DDEBUG_LOG"
+
+function __has_command() {
+    [ ! "$(command -v $1)" ] && {
+	echo "Error: No C compiler was found"
+	exit 1
+    }
+}
+
+function build() {
+    __has_command "cc"
+    [ -z "$1" ] && echo "Error: No arguments were provided" && exit 1
+
+    if [ "$1" == "rel_build" ]; then
+	cc $FLAGS "$PROGRAM".c $LINK -o $PROGRAM
+    elif [ "$1" == "deb_build" ]; then
+	cc $FLAGS "$PROGRAM".c $LINK $DEBUG -o $PROGRAM
+    elif [ "$1" == "clean" ]; then
+	rm "$PROGRAM"
+    else
+	echo "Error: Invalid argument $1"
+    fi
+}
+
+build "$1"
